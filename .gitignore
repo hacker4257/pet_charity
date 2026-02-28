@@ -1,0 +1,25 @@
+# 二进制
+*.exe
+server
+.VsCodeCounter
+
+# 依赖
+vendor/
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# 环境/密钥
+.env
+configs/config.yaml
+configs/*_private_key.pem
+
+# 上传文件
+uploads/
+
+# 系统文件
+.DS_Store
+Thumbs.

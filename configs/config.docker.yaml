@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  mode: release
+
+database:
+  host: mysql          # ← 容器名，不是 localhost
+  port: 3306
+  user: root
+  password: root123456
+  dbname: pet_charity
+
+redis:
+  host: redis          # ← 容器名
+  port: 6379
+  password: ""
+  db: 0
+
+jwt:
+  secret: your_jwt_secret_change_in_production
+  access_expire: 7200
+  refresh_expire: 604800
+
+aliyun:
+  access_key_id: ""
+  access_key_secret: ""
+  sms_sign_name: ""
+  sms_template_code: ""
+  oss_bucket: ""
+  oss_endpoint: ""
+
+wechat_pay:
+  app_id: ""
+  mch_id: ""
+  api_key: ""
+  notify_url: "https://yourdomain.com/api/v1/donations/notify/wechat"
+
+alipay:
+  app_id: ""
+  private_key: ""
+  alipay_public_key: ""
+  notify_url: "https://yourdomain.com/api/v1/donations/notify/alipay"
+  return_url: "https://yourdomain.com/donation"
