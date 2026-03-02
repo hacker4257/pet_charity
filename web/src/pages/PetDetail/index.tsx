@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Row, Col, Tag, Button, Image, Descriptions, Spin, Empty, message, Modal, Form, Input } from 'antd';
-import { HeartOutlined, HeartFilled, GiftOutlined, MessageOutlined } from '@ant-design/icons';
+import { HeartOutlined, HeartFilled, GiftOutlined, MessageOutlined, BookOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { getPetDetail } from '../../api/pet';
 import { createAdoption } from '../../api/adoption';
@@ -215,6 +215,16 @@ const PetDetailPage = () => {
                             >
                                 {favorited ? '已收藏' : '收藏'}
                             </Button>
+                            {pet.status === 'adopted' && (
+                                <Button
+                                    size="large"
+                                    icon={<BookOutlined />}
+                                    onClick={() => navigate(`/pets/${pet.id}/diary`)}
+                                    style={{ marginLeft: 16 }}
+                                >
+                                    成长日记
+                                </Button>
+                            )}
                             
                         </div>
                     </Col>

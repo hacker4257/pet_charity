@@ -6,17 +6,17 @@ database:
   host: mysql          # ← 容器名，不是 localhost
   port: 3306
   user: root
-  password: root123456
+  password: ""         # 由环境变量 PET_DATABASE_PASSWORD 覆盖
   dbname: pet_charity
 
 redis:
   host: redis          # ← 容器名
   port: 6379
-  password: ""
+  password: ""         # 由环境变量 PET_REDIS_PASSWORD 覆盖
   db: 0
 
 jwt:
-  secret: your_jwt_secret_change_in_production
+  secret: ""           # 由环境变量 PET_JWT_SECRET 覆盖
   access_expire: 7200
   refresh_expire: 604800
 
@@ -40,3 +40,9 @@ alipay:
   alipay_public_key: ""
   notify_url: "https://yourdomain.com/api/v1/donations/notify/alipay"
   return_url: "https://yourdomain.com/donation"
+
+kafka:
+  brokers:
+    - "kafka:9092"
+  topic: "pet_charity_events"
+  group_id: "pet_charity_consumer"

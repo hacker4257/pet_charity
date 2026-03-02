@@ -51,6 +51,17 @@ func (r *AdoptionRepo) FindPendingByUserAndPet(userID, petID uint) (*model.Adopt
 	return &adoption, nil
 }
 
+func (r *AdoptionRepo) FindApprovedByUserAndPet(userID, petID uint) (*model.Adoption, error) {
+	var adoption model.Adoption
+	result := r.db.
+		Where("user_id = ? AND pet_id = ? AND status = ?", userID, petID, "approved").
+		First(&adoption)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &adoption, nil
+}
+
 // 用户申请表
 func (r *AdoptionRepo) ListByUser(userID uint, page, pageSize int) ([]model.Adoption, int64, error) {
 	var adoptions []model.Adoption

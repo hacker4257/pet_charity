@@ -17,6 +17,7 @@ func Setup(mode string) *gin.Engine {
 	hub := ws.NewHub()
 	go hub.Run()
 	ws.StartNotifySubscriber(hub)
+	ws.StartChatSubscriber(hub)
 
 	gin.SetMode(mode)
 
@@ -40,6 +41,7 @@ func Setup(mode string) *gin.Engine {
 	rescueRepo := repository.NewRescueRepo()
 	smsRepo := repository.NewSmsRepo()
 	tokenRepo := repository.NewTokenRepo()
+	petDiaryRepo := repository.NewPetDiaryRepo()
 
 	txManager := repository.NewTransactionManager()
 	// 创建 Service
@@ -47,8 +49,10 @@ func Setup(mode string) *gin.Engine {
 	smsService := service.NewSmsService(smsRepo)
 	orgService := service.NewOrgService(orgRepo, userRepo)
 	petService := service.NewPetService(petRepo, orgRepo)
+	petDiaryService := service.NewPetDiaryService(petDiaryRepo, adoptionRepo)
 	adoptionService := service.NewAdoptionService(adoptionRepo, petRepo, orgRepo, txManager)
 	donationService := service.NewDonationService(donationRepo, orgRepo, petRepo, txManager)
+
 	donationService.StartExpireWorker()
 
 	rescueService := service.NewRescueService(rescueRepo, orgRepo, petRepo)
@@ -65,6 +69,7 @@ func Setup(mode string) *gin.Engine {
 	adoptionHandler := handler.NewAdoptionHandler(adoptionService)
 	donationHandler := handler.NewDonationHandler(donationService)
 	rescueHandler := handler.NewRescueHandler(rescueService)
+	petDiaryHandler := handler.NewPetDiaryHandler(petDiaryService)
 	adminHandler := handler.NewAdminHandler(orgService, userService, petService, donationService)
 
 	//message
@@ -153,6 +158,14 @@ func Setup(mode string) *gin.Engine {
 	//状态
 	v1.GET("/feed", feedHandler.List)
 
+	//宠物日记（公开浏览）
+	diariesPublic := v1.Group("/diaries")
+	diariesPublic.Use(publicRL)
+	{
+		diariesPublic.GET("", petDiaryHandler.ListPublic)
+		diariesPublic.GET("/pet/:petId", petDiaryHandler.ListByPet)
+	}
+
 	//需要登录
 	authorized := v1.Group("")
 	authorized.Use(middleware.JWTAuth(tokenRepo.GetVersion))
@@ -227,6 +240,18 @@ func Setup(mode string) *gin.Engine {
 			notifications.GET("/unread", notifyHandler.UnreadCount)
 			notifications.PUT("/:id/read", notifyHandler.MarkRead)
 			notifications.PUT("/read-all", notifyHandler.MarkAllRead)
+		}
+
+		//宠物日记
+		diaries := authorized.Group("/diaries")
+		{
+			diaries.POST("", petDiaryHandler.Create)
+			diaries.GET("/:id", petDiaryHandler.GetByID)
+			diaries.PUT("/:id", petDiaryHandler.Update)
+			diaries.DELETE("/:id", petDiaryHandler.Delete)
+			diaries.POST("/:id/images", petDiaryHandler.UploadImage)
+			diaries.DELETE("/:id/images/:imageId", petDiaryHandler.DeleteImage)
+			diaries.POST("/:id/like", petDiaryHandler.ToggleLike)
 		}
 
 		authorized.GET("/leaderboard/me", activityHandler.MyRank)

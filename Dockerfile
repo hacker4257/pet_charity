@@ -19,11 +19,16 @@ WORKDIR /app
 # 安装时区数据（Go 的 time 包需要）
 RUN apk add --no-cache tzdata ca-certificates
 
+# 创建非 root 用户
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 COPY --from=builder /app/server .
 COPY --from=builder /app/configs ./configs
 
-# 创建上传目录
-RUN mkdir -p uploads
+# 创建上传目录并赋权
+RUN mkdir -p uploads && chown -R appuser:appgroup /app
+
+USER appuser
 
 EXPOSE 8080
 

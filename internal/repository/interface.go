@@ -50,6 +50,7 @@ type AdoptionRepository interface {
 	FindByID(id uint) (*model.Adoption, error)
 	UpdateFields(id uint, fields map[string]interface{}) error
 	FindPendingByUserAndPet(userID, petID uint) (*model.Adoption, error)
+	FindApprovedByUserAndPet(userID, petID uint) (*model.Adoption, error)
 	ListByUser(userID uint, page, pageSize int) ([]model.Adoption, int64, error)
 	ListByOrg(orgID uint, status string, page, pageSize int) ([]model.Adoption, int64, error)
 }
@@ -146,4 +147,25 @@ type NotificationRepository interface {
 	DecrUnread(userID uint) error
 	Publish(userID uint, data []byte) error
 	ResetUnread(userID uint) error
+}
+
+
+type PetDiaryRepository interface {
+	Create(diary *model.PetDiary) error
+	FindByID(id uint) (*model.PetDiary, error)
+	Update(id uint, fields map[string]interface{}) error
+	Delete(id uint) error
+	ListByPet(petID uint, page, pageSize int) ([]model.PetDiary, int64, error)
+	ListByUser(userID uint, page, pageSize int) ([]model.PetDiary, int64, error)
+	ListPublic(page, pageSize int) ([]model.PetDiary, int64, error)
+
+	// 图片
+	CreateImage(image *model.DiaryImage) error
+	DeleteImage(imageID uint) error
+	FindImageByID(imageID uint) (*model.DiaryImage, error)
+
+	// 点赞
+	ToggleLike(diaryID, userID uint) (bool, error)
+	CountLikes(diaryID uint) (int64, error)
+	IsLiked(diaryID, userID uint) (bool, error)
 }

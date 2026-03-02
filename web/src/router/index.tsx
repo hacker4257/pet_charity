@@ -6,6 +6,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Pets from '../pages/Pets';
 import PetDetail from '../pages/PetDetail';
+import PetDiary from '../pages/PetDiary';
 import Rescue from '../pages/Rescue';
 import Donation from '../pages/Donation';
 import Profile from '../pages/Profile';
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
         { index: true, element: <Home /> },
         { path: 'pets', element: <Pets /> },
         { path: 'pets/:id', element: <PetDetail /> },
+        { path: 'pets/:petId/diary', element: <PetDiary /> },
         { path: 'rescue', element: <Rescue /> },
         { path: 'donation', element: <Donation /> },
         { path: 'leaderboard', element: <Leaderboard /> },

@@ -67,6 +67,9 @@ func AutoMigrate() error {
 		&model.Message{},
 		&model.UserActivityLogs{},
 		&model.Notification{},
+		&model.PetDiary{},
+		&model.DiaryImage{},
+		&model.DiaryLike{},
 	)
 }
 
